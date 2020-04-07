@@ -12,7 +12,7 @@ namespace WebAPI.Repositories.Contracts
         Task<IEnumerable<DonationCandidate>> GetAll();
         Task<DonationCandidate> Add(DonationCandidate donationCandidate);
         Task<DonationCandidate> Update(DonationCandidate donationCandidate);
-        Task Delete(DonationCandidate donationCandidate);
+        Task<DonationCandidate> Delete(DonationCandidate donationCandidate);
 
     }
 }

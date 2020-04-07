@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebAPI.Models;
 using WebAPI.Repositories;
 using WebAPI.Repositories.Contexts;
 using WebAPI.Repositories.Contracts;
 using WebAPI.Services;
 using WebAPI.Services.Contracts;
+using WebAPI.Services.DTOs;
 
 namespace WebAPI
 {
@@ -31,6 +34,11 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddAutoMapper(configuration =>
+            {
+                configuration.CreateMap<DonationCandidate, DonationCandidateDTO>();
+            }, typeof(Startup));
 
             services.AddDbContext<DonationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));

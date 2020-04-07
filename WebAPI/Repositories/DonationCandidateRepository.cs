@@ -25,10 +25,11 @@ namespace WebAPI.Repositories
             return donationCandidate;
         }
 
-        public async Task Delete(DonationCandidate donationCandidate)
+        public async Task<DonationCandidate> Delete(DonationCandidate donationCandidate)
         {
             _donationDbContext.DonationCandidates.Remove(donationCandidate);
             await _donationDbContext.SaveChangesAsync();
+            return donationCandidate;
         }
 
         public async Task<IEnumerable<DonationCandidate>> GetAll()

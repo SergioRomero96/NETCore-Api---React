@@ -1,47 +1,57 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.Models;
 using WebAPI.Repositories.Contracts;
 using WebAPI.Services.Contracts;
+using WebAPI.Services.DTOs;
 
 namespace WebAPI.Services
 {
     public class DonationCandidateService : IDonationCandidateService
     {
         private readonly IDonationCandidateRepository _donationCandidateRepository;
+        private readonly IMapper _mapper;
 
-        public DonationCandidateService(IDonationCandidateRepository donationCandidateRepository)
+        public DonationCandidateService(IDonationCandidateRepository donationCandidateRepository, IMapper mapper)
         {
             _donationCandidateRepository = donationCandidateRepository;
+            _mapper = mapper;
         }
 
-        public async Task Delete(int id)
+        public async Task<DonationCandidateDTO> Delete(int id)
         {
             var dCandidateInDb = await _donationCandidateRepository.GetById(id);
-            await _donationCandidateRepository.Delete(dCandidateInDb);
+            
+            var candidateDeleted = await _donationCandidateRepository.Delete(dCandidateInDb);
+
+            return _mapper.Map<DonationCandidateDTO>(candidateDeleted);
         }
 
-        public async Task<DonationCandidate> Get(int id)
+        public async Task<DonationCandidateDTO> Get(int id)
         {
             var candidate = await _donationCandidateRepository.GetById(id);
-            return candidate;
+            var candidateDTO = _mapper.Map<DonationCandidateDTO>(candidate);
+            return candidateDTO;
         }
 
-        public async Task<IEnumerable<DonationCandidate>> GetAll()
+        public async Task<IEnumerable<DonationCandidateDTO>> GetAll()
         {
             var candidates = await _donationCandidateRepository.GetAll();
-            return candidates;
+            var candidatesDTO = _mapper.Map<IEnumerable<DonationCandidateDTO>>(candidates);
+            return candidatesDTO;
         }
 
-        public async Task<DonationCandidate> Save(DonationCandidate donationCandidate)
+        public async Task<DonationCandidateDTO> Save(DonationCandidateDTO donationCandidateDTO)
         {
+            var donationCandidate = _mapper.Map<DonationCandidate>(donationCandidateDTO);
             var candidateInDb = await _donationCandidateRepository.Add(donationCandidate);
-            return candidateInDb;
+            return _mapper.Map<DonationCandidateDTO>(candidateInDb);
         }
 
-        public async Task<DonationCandidate> Update(int id, DonationCandidate donationCandidate)
+        public async Task<DonationCandidateDTO> Update(int id, DonationCandidateDTO donationCandidate)
         {
             var candidateInDb = await _donationCandidateRepository.GetById(id);
             candidateInDb.FullName = donationCandidate.FullName;
@@ -53,7 +63,7 @@ namespace WebAPI.Services
 
             var candidateUpdated = await _donationCandidateRepository.Update(candidateInDb);
 
-            return candidateUpdated;
+            return _mapper.Map<DonationCandidateDTO>(candidateUpdated);
         }
     }
 }
