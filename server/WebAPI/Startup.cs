@@ -38,6 +38,8 @@ namespace WebAPI
             services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<DonationCandidate, DonationCandidateDTO>();
+                configuration.CreateMap<DonationCandidateDTO, DonationCandidate>();
+
             }, typeof(Startup));
 
             services.AddDbContext<DonationDbContext>(options =>
@@ -45,6 +47,8 @@ namespace WebAPI
 
             services.AddScoped<IDonationCandidateRepository, DonationCandidateRepository>();
             services.AddTransient<IDonationCandidateService, DonationCandidateService>();
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +58,11 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(options => 
+            options.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 
             app.UseRouting();
 
